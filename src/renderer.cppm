@@ -1,5 +1,5 @@
 
-export module renderer;
+export module fusion.renderer;
 
 import std;
 
