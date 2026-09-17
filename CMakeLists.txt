@@ -8,8 +8,22 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include(FetchContent)
+
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 3.4
+    GIT_SHALLOW TRUE
+)
+
+FetchContent_MakeAvailable(glfw)
+
 # Library
-add_library(Fusion STATIC)
+add_library(${PROJECT_NAME} STATIC)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -pedantic)
+target_include_directories(${PROJECT_NAME} PRIVATE ${glfw_SOURCE_DIR}/include)
 
 set(FUSION_MODULES
     src/core.cppm
@@ -18,18 +32,9 @@ set(FUSION_MODULES
     src/platform/window/window.cppm
 )
 
-set(FUSION_SOURCES)
+set(FUSION_SOURCES src/platform/window/window_glfw.cpp)
 
-if (WIN32)
-    list(APPEND FUSION_SOURCES src/platform/window/window_windows.cpp)
-elseif(UNIX)
-    list(APPEND FUSION_SOURCES src/platform/window/window_wayland.cpp)
-    list(APPEND FUSION_SOURCES src/platform/window/window_x11.cpp)
-else()
-    message(FATAL_ERROR "Unkown system")
-endif()
-
-target_sources(Fusion
+target_sources(${PROJECT_NAME}
     PUBLIC
         FILE_SET CXX_MODULES FILES ${FUSION_MODULES}
         FILE_SET SOURCES FILES ${FUSION_SOURCES}

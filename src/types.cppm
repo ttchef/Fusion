@@ -18,3 +18,4 @@ export using FsF64 = double;
 
 export using FsUsize = std::size_t;
 
+export using FsBool = bool;
