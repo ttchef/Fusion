@@ -1,6 +1,6 @@
 
-#include <Fusion/core.hpp>
-#include <iostream>
+import std;
+import test;
 
 int main()
 {

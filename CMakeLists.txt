@@ -1,18 +1,27 @@
-cmake_minimum_required(VERSION 3.15)
-project(Fusion VERSION 1.0.0)
+cmake_minimum_required(VERSION 4.4)
 
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "f35a9ac6-8463-4d38-8eec-5d6008153e7d")
+
+project(Fusion VERSION 1.0.0 LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Library
-add_library(${PROJECT_NAME} STATIC
-  src/test.cpp
+add_library(Fusion STATIC)
+
+target_sources(Fusion
+    PUBLIC
+        FILE_SET CXX_MODULES
+        FILES
+            src/test.cppm
 )
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_MODULE_STD ON)
 
 # Example
 add_executable(example example/main.cpp)
-target_compile_features(example PRIVATE cxx_std_23)
-target_include_directories(example PRIVATE ./include)
-target_link_libraries(example Fusion)
+
+set_property(TARGET example PROPERTY CXX_MODULE_STD ON)
+
+target_link_libraries(example PRIVATE Fusion)
