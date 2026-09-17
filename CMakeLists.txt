@@ -15,7 +15,7 @@ target_sources(Fusion
     PUBLIC
         FILE_SET CXX_MODULES
         FILES
-            src/test.cppm
+            src/renderer.cppm
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_MODULE_STD ON)
 

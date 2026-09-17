@@ -1,9 +1,8 @@
 
-import std;
-import test;
+import renderer;
 
 int main()
 {
-	std::cout << "Number: " << get() << std::endl;
+	fs::Renderer r;
 	return 0;
 }
