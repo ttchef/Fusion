@@ -37,6 +37,16 @@ public:
 	{
 		return glfwWindowShouldClose(m_window);
 	}
+	void poll_events() const override
+	{
+		glfwPollEvents();
+	}
+	void draw() const override
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		glfwSwapBuffers(m_window);
+	}
 };
 
 std::unique_ptr<Window> Window::create(FsU32 width, FsU32 height, const char *title)

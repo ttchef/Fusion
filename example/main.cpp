@@ -9,7 +9,8 @@ int main()
 
 	while (!window->should_close())
 	{
-		
+		window->draw();
+		window->poll_events();		
 	}
 	return 0;
 }

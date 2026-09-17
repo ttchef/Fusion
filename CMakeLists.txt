@@ -21,7 +21,7 @@ FetchContent_MakeAvailable(glfw)
 
 # Library
 add_library(${PROJECT_NAME} STATIC)
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw GL)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -pedantic)
 target_include_directories(${PROJECT_NAME} PRIVATE ${glfw_SOURCE_DIR}/include)
 
