@@ -1,6 +1,8 @@
 
 export module fusion.window;
 
+import fusion.types;
+
 import std;
 
 namespace fs
@@ -8,9 +10,7 @@ namespace fs
 export class Window
 {
 public:
-	Window()
-	{
-		std::cout << "Made Window\n";
-	}
+	static std::unique_ptr<Window> create(FsU32 width, FsU32 height, const char *title);
+	virtual ~Window() = default;
 };
 } // namespace fs

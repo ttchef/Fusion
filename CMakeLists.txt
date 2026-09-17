@@ -11,14 +11,30 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Library
 add_library(Fusion STATIC)
 
+set(FUSION_MODULES
+    src/core.cppm
+    src/types.cppm
+    src/renderer.cppm
+    src/platform/window/window.cppm
+)
+
+set(FUSION_SOURCES)
+
+if (WIN32)
+    list(APPEND FUSION_SOURCES src/platform/window/window_windows.cpp)
+elseif(UNIX)
+    list(APPEND FUSION_SOURCES src/platform/window/window_wayland.cpp)
+    list(APPEND FUSION_SOURCES src/platform/window/window_x11.cpp)
+else()
+    message(FATAL_ERROR "Unkown system")
+endif()
+
 target_sources(Fusion
     PUBLIC
-        FILE_SET CXX_MODULES
-        FILES
-            src/core.cppm
-            src/renderer.cppm
-            src/platform/window/window.cppm
+        FILE_SET CXX_MODULES FILES ${FUSION_MODULES}
+        FILE_SET SOURCES FILES ${FUSION_SOURCES}
 )
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_MODULE_STD ON)
 
 # Example
