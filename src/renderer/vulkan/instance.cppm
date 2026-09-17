@@ -55,13 +55,17 @@ public:
 		info.enabledLayerCount = static_cast<FsU32>(desc.layers.size());
 		info.ppEnabledLayerNames = desc.layers.data();
 
-		VK_CHECK(vkCreateInstance(&info, NULL, &m_handle));
+		VK_CHECK(vkCreateInstance(&info, nullptr, &m_handle));
 
 		volkLoadInstance(m_handle);
 	}
 	~Instance()
 	{
-		vkDestroyInstance(m_handle, NULL);
+		vkDestroyInstance(m_handle, nullptr);
+	}
+	VkInstance handle() const noexcept
+	{
+		return m_handle;
 	}
 };
 } // namespace fs::vk

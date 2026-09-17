@@ -13,7 +13,7 @@ int main()
 
 		// Add debug messenger
 #if defined(DEBUG)
-		instance_extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		instance_extensions.push_back("VK_EXT_debug_utils");
 		instance_layers.push_back("VK_LAYER_KHRONOS_validation");
 #endif
 
@@ -22,6 +22,12 @@ int main()
 			.extensions = instance_extensions,
 		};
 		fs::vk::Instance instance{instance_desc};
+
+#if defined(DEBUG)
+		fs::vk::DebugMessenger debug_messenger{instance};
+#endif
+		fs::vk::Surface surface = window->create_surface(instance);
+		fs::vk::PhysicalDevice physical_device{instance, surface};
 
 		while (!window->should_close())
 		{

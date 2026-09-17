@@ -1,9 +1,14 @@
 
 module;
 
+#include <renderer/vulkan/check.hpp>
 #include <GLFW/glfw3.h>
 
 module fusion.window;
+
+import fusion.renderer.vulkan.utils;
+
+using namespace fs::vk;
 
 namespace fs
 {
@@ -16,12 +21,12 @@ public:
 		// NOTE: Move out in a sec
 		if (!glfwInit())
 		{
-			// idk
+			throw std::runtime_error("Failed to init glfw");
 		}
 		m_window = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (!m_window)
 		{
-			// idk
+			throw std::runtime_error("Failed to create glfw window");
 		}
 
 		if (!glfwVulkanSupported())
@@ -55,6 +60,12 @@ public:
 		}
 
 		return std::vector<const char *>(extensions, extensions + count);
+	}
+	fs::vk::Surface create_surface(const fs::vk::Instance &instance) const override
+	{
+		fs::vk::Surface surface{};
+		VK_CHECK(glfwCreateWindowSurface(instance.handle(), m_window, nullptr, surface.addr()));
+		return surface;	
 	}
 };
 

@@ -28,7 +28,7 @@ FetchContent_MakeAvailable(glfw volk)
 # Library
 add_library(${PROJECT_NAME} STATIC)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw volk::volk)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -pedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -pedantic -g)
 target_include_directories(${PROJECT_NAME} PRIVATE src ${glfw_SOURCE_DIR}/include ${volk_SOURCE_DIR})
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:DEBUG>
@@ -40,8 +40,16 @@ set(FUSION_MODULES
     src/types.cppm
     src/renderer/vulkan/instance.cppm
     src/renderer/vulkan/utils.cppm
+    src/renderer/vulkan/surface.cppm
+    src/renderer/vulkan/physical_device.cppm
     src/platform/window/window.cppm
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    list(APPEND FUSION_MODULES
+        src/renderer/vulkan/debug_messenger.cppm
+    )
+endif()
 
 set(FUSION_SOURCES src/platform/window/window_glfw.cpp)
 
@@ -55,7 +63,9 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_MODULE_STD ON)
 
 # Example
 add_executable(example example/main.cpp)
-
 set_property(TARGET example PROPERTY CXX_MODULE_STD ON)
-
 target_link_libraries(example PRIVATE Fusion)
+target_compile_definitions(example PRIVATE
+    $<$<CONFIG:Debug>:DEBUG>
+    $<$<CONFIG:Release>:NDEBUG>
+)
