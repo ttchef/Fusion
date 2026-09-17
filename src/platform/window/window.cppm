@@ -14,8 +14,6 @@ public:
 	virtual ~Window() = default;
 	virtual FsBool should_close() const = 0;
 	virtual void poll_events() const = 0;
-
-	// TEMP: For testing
-	virtual void draw() const = 0;
+	virtual std::vector<const char *> get_platform_extensions() const = 0;
 };
 } // namespace fs

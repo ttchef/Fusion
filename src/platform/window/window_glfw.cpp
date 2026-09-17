@@ -24,7 +24,10 @@ public:
 			// idk
 		}
 
-		glfwMakeContextCurrent(m_window);
+		if (!glfwVulkanSupported())
+		{
+			throw std::runtime_error("Vulkan isnt supported");
+		}
 	}
 	~WindowGLFW()
 	{
@@ -41,11 +44,17 @@ public:
 	{
 		glfwPollEvents();
 	}
-	void draw() const override
+	std::vector<const char *> get_platform_extensions() const override
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-		glfwSwapBuffers(m_window);
+		FsU32 count;
+		const char **extensions = glfwGetRequiredInstanceExtensions(&count);
+
+		if (!extensions)
+		{
+			throw std::runtime_error("Failed to retrive required vulkan instance extensions");
+		}
+
+		return std::vector<const char *>(extensions, extensions + count);
 	}
 };
 

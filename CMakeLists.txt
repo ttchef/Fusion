@@ -17,18 +17,29 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE
 )
 
-FetchContent_MakeAvailable(glfw)
+FetchContent_Declare(
+    volk
+    GIT_REPOSITORY https://github.com/zeux/volk.git
+    GIT_TAG dbc6d2fbb0cc07d3e42669f594a991ac35f666d9
+)
+
+FetchContent_MakeAvailable(glfw volk)
 
 # Library
 add_library(${PROJECT_NAME} STATIC)
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw GL)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw volk::volk)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -pedantic)
-target_include_directories(${PROJECT_NAME} PRIVATE ${glfw_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE src ${glfw_SOURCE_DIR}/include ${volk_SOURCE_DIR})
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    $<$<CONFIG:Debug>:DEBUG>
+    $<$<CONFIG:Release>:NDEBUG>
+)
 
 set(FUSION_MODULES
     src/core.cppm
     src/types.cppm
-    src/renderer.cppm
+    src/renderer/vulkan/instance.cppm
+    src/renderer/vulkan/utils.cppm
     src/platform/window/window.cppm
 )
 
