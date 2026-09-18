@@ -23,6 +23,9 @@ public:
 		{
 			throw std::runtime_error("Failed to init glfw");
 		}
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		
 		m_window = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (!m_window)
 		{

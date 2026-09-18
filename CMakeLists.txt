@@ -42,6 +42,7 @@ set(FUSION_MODULES
     src/renderer/vulkan/utils.cppm
     src/renderer/vulkan/surface.cppm
     src/renderer/vulkan/physical_device.cppm
+    src/renderer/vulkan/device.cppm
     src/platform/window/window.cppm
 )
 
@@ -56,6 +57,7 @@ set(FUSION_SOURCES src/platform/window/window_glfw.cpp)
 target_sources(${PROJECT_NAME}
     PUBLIC
         FILE_SET CXX_MODULES FILES ${FUSION_MODULES}
+    PRIVATE
         FILE_SET SOURCES FILES ${FUSION_SOURCES}
 )
 

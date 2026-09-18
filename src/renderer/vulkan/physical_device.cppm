@@ -15,11 +15,14 @@ import std;
 constexpr FsI32 INVALID_GPU = -1;
 constexpr FsI32 INVALID_QUEUE = -1;
 
+constexpr FsU32 GRAPHICS_QUEUE = 0;
+constexpr FsU32 PRESENT_QUEUE = 0;
+
 namespace fs::vk
 {
 FsU32 score_physical_device(VkPhysicalDevice dev)
 {
-	VkPhysicalDeviceProperties2 props;
+	VkPhysicalDeviceProperties2 props{};
 	props.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
 	
 	vkGetPhysicalDeviceProperties2(dev, &props);
@@ -60,7 +63,7 @@ bool is_physical_device_supported(VkPhysicalDevice dev, VkSurfaceKHR surface, st
 
 	FsI32 graphics_index = INVALID_QUEUE;
 	FsI32 present_index = INVALID_QUEUE;
-	
+
 	for (FsUsize i = 0; i < props.size(); i++)
 	{
 		const VkQueueFamilyProperties &prop = props[i].queueFamilyProperties;
@@ -81,27 +84,50 @@ bool is_physical_device_supported(VkPhysicalDevice dev, VkSurfaceKHR surface, st
 				break;
 			}
 		}
-
-		if (graphics_index != INVALID_GPU && present_index != INVALID_GPU)
-		{
-			
-		}
 	}
 
-	return true;	
+	if (graphics_index != INVALID_GPU && present_index != INVALID_GPU)
+	{
+		get<GRAPHICS_QUEUE>(queue_indices) = graphics_index;
+		get<PRESENT_QUEUE>(queue_indices) = present_index;
+		return true;
+	}
+
+	return false;	
 }
+
+class Device;
 
 export class Queue
 {
-	VkQueue handle;
-	FsU32 index;
+	VkQueue m_handle;
+	FsU32 m_index;
+public:
+	Queue() : m_handle(VK_NULL_HANDLE), m_index(0) {}
+	Queue(FsU32 index) : m_handle(VK_NULL_HANDLE), m_index(index) {}
+
+	FsU32 index() const
+	{
+		return m_index;
+	}
+
+	VkQueue handle() const
+	{
+		return m_handle;
+	}
+
+	VkQueue *addr()
+	{
+		return &m_handle;
+	}
 };
 	
 export class PhysicalDevice
 {
 	VkPhysicalDevice m_handle;
-	Queue graphics_queue;
 
+	Queue m_graphics_queue;
+	Queue m_present_queue;
 public:
 	PhysicalDevice(const Instance &instance, const Surface &surface)
 	{
@@ -123,6 +149,9 @@ public:
 			{
 				continue;
 			}
+
+			m_graphics_queue = Queue(get<GRAPHICS_QUEUE>(queue_indices));
+			m_present_queue = Queue(get<PRESENT_QUEUE>(queue_indices));
 			
 			FsU32 score = score_physical_device(dev);
 
@@ -139,6 +168,21 @@ public:
 		}
 
 		m_handle = devices.at(gpu_to_pick);
+	}
+
+	VkPhysicalDevice handle() const noexcept
+	{
+		return m_handle;
+	}
+
+	Queue graphics_queue() const noexcept
+	{
+		return m_graphics_queue;
+	}
+
+	Queue present_queue() const noexcept
+	{
+		return m_present_queue;
 	}
 };
 } // namespace fs::vk
